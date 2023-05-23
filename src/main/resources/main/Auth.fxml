@@ -8,7 +8,7 @@
 <AnchorPane prefHeight="400.0" prefWidth="619.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AuthController">
    <children>
       <Button layoutX="209.0" layoutY="298.0" mnemonicParsing="false" onAction="#signIn" prefHeight="25.0" prefWidth="229.0" text="Sign in" />
-      <Button layoutX="208.0" layoutY="329.0" mnemonicParsing="false" onAction="#reg" prefHeight="25.0" prefWidth="229.0" text="Register" />
+      <Button layoutX="208.0" layoutY="329.0" mnemonicParsing="false" onAction="#signUp" prefHeight="25.0" prefWidth="229.0" text="Register" />
       <TextField fx:id="passwordField" layoutX="210.0" layoutY="237.0" prefHeight="25.0" prefWidth="229.0" />
       <TextField fx:id="loginField" layoutX="210.0" layoutY="203.0" prefHeight="25.0" prefWidth="229.0" />
       <Label layoutX="132.0" layoutY="207.0" prefHeight="17.0" prefWidth="71.0" text="Login:" />

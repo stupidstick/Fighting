@@ -2,19 +2,15 @@ package client;
 
 import dto.*;
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
+import main.Main;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class Client extends Thread {
     private Socket socket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
-    private ObservableList<String> lobbiesList;
 
     public Client(){
     }
@@ -23,35 +19,40 @@ public class Client extends Thread {
             socket = new Socket(host, port);
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
+            start();
     }
 
-    public boolean signIn(String login, String password) throws IOException, ClassNotFoundException{
+    public void signIn(String login, String password) throws IOException{
         SignInDTO request = new SignInDTO(new UserDTO(login, password));
         out.writeObject(request);
-        AuthResponseDTO response = (AuthResponseDTO) in.readObject();
-        return response.isValue();
     }
 
-    public boolean register(String login, String password) throws IOException, ClassNotFoundException{
-        RegDTO request = new RegDTO(new UserDTO(login, password));
-        out.writeObject(request);
-        AuthResponseDTO response = (AuthResponseDTO) in.readObject();
-        return response.isValue();
-    }
-
-    public boolean createLobby() throws IOException, ClassNotFoundException{
-        CreateLobbyDTO request = new CreateLobbyDTO();
-        out.writeObject(request);
-        return ((CreateLobbyResponse) in.readObject()).getValue();
-    }
-
-    public void updateLobbiesList(List<String> list){
+    private void dispatchCommand(Object response){
+        synchronized (Main.getWaiter()){
+            Main.getWaiter().notify();
+        }
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                lobbiesList.setAll(list);
+                Main.dispatcherProperty().set(response);
             }
         });
+    }
+
+
+    public void signUp(String login, String password) throws IOException, ClassNotFoundException{
+        SignUpDTO request = new SignUpDTO(new UserDTO(login, password));
+        out.writeObject(request);
+    }
+
+    public void createLobby() throws IOException{
+        CreateLobbyDTO request = new CreateLobbyDTO();
+        out.writeObject(request);
+    }
+
+    public void getLobbiesList() throws IOException{
+        GetLobbiesListDTO request = new GetLobbiesListDTO();
+        out.writeObject(request);
     }
 
     @Override
@@ -59,6 +60,19 @@ public class Client extends Thread {
         while (!socket.isClosed()){
             try{
                 Object message = in.readObject();
+                System.out.println(message);
+                if (message instanceof SignInResponseDTO){
+                    dispatchCommand(message);
+                }
+                if (message instanceof SignUpResponseDTO){
+                    dispatchCommand(message);
+                }
+                if (message instanceof CreateLobbyResponseDTO){
+                    dispatchCommand(message);
+                }
+                if (message instanceof LobbiesListDTO){
+                    dispatchCommand(message);
+                }
 
             }
             catch (Exception exception){
@@ -69,7 +83,6 @@ public class Client extends Thread {
 
     public void close(){
         try{
-
             out.close();
             in.close();
             socket.close();
@@ -77,13 +90,5 @@ public class Client extends Thread {
         catch (Exception exception){
             System.out.println(exception.getMessage());
         }
-    }
-
-    public ObservableList<String> getLobbiesList() {
-        return lobbiesList;
-    }
-
-    public void setLobbiesList(ObservableList<String> lobbiesList) {
-        this.lobbiesList = lobbiesList;
     }
 }

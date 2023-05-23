@@ -32,21 +32,21 @@ public class MonoThreadClientHandler extends Thread{
                 Object message = in.readObject();
 
                 if (message instanceof SignInDTO){
-                    signInUser(((SignInDTO) message).getUser());
+                    logInUser(((SignInDTO) message).getUser());
                 }
 
-                if (message instanceof RegDTO){
-                    regUser(((RegDTO) message).getUser());
+
+                if (message instanceof SignUpDTO){
+                    regUser(((SignUpDTO) message).getUser());
                 }
 
                 if (message instanceof CreateLobbyDTO){
                     createLobby();
                 }
 
-                if (message instanceof CommandDTO) {
-                    commandDispatch((CommandDTO) message);
+                if (message instanceof GetLobbiesListDTO){
+                    sendLobbiesList();
                 }
-
             }
         }
         catch (Exception exception){
@@ -55,8 +55,6 @@ public class MonoThreadClientHandler extends Thread{
         }
 
 
-    private void commandDispatch(CommandDTO command){
-    }
 
     public void sendLobbiesList(){
         List<String> lobbies = Server.getLobbies().stream().map(MonoThreadClientHandler::getUsername).toList();
@@ -70,7 +68,7 @@ public class MonoThreadClientHandler extends Thread{
 
     private void regUser(UserDTO user){
         try{
-            AuthResponseDTO response = new AuthResponseDTO(Database.addUser(user.getLogin(), user.getPassword()));
+            SignUpResponseDTO response = new SignUpResponseDTO(Database.addUser(user.getLogin(), user.getPassword()));
             out.writeObject(response);
         }
         catch (Exception exception){
@@ -78,14 +76,13 @@ public class MonoThreadClientHandler extends Thread{
         }
     }
 
-    private void signInUser(UserDTO user){
+    private void logInUser(UserDTO user){
         try{
-            AuthResponseDTO response = new AuthResponseDTO(Database.checkUser(user.getLogin(), user.getPassword()));
+            SignInResponseDTO response = new SignInResponseDTO(Database.checkUser(user.getLogin(), user.getPassword()));
             if (response.isValue()){
                 username = user.getLogin();
             }
             out.writeObject(response);
-            sendLobbiesList();
         }
         catch (Exception exception){
             System.out.println(exception.getMessage());
@@ -96,10 +93,10 @@ public class MonoThreadClientHandler extends Thread{
         try {
             if (!Server.getLobbies().contains(this)){
                 Server.getLobbies().add(this);
-                out.writeObject(new CreateLobbyResponse(true));
+                out.writeObject(new CreateLobbyResponseDTO(true));
             }
             else{
-                out.writeObject(new CreateLobbyResponse(false));
+                out.writeObject(new CreateLobbyResponseDTO(false));
             }
         }
         catch (Exception exception){

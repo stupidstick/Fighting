@@ -2,9 +2,9 @@ package dto;
 
 import java.io.Serializable;
 
-public class AuthResponseDTO implements Serializable {
+public class SignUpResponseDTO implements Serializable {
     private boolean value;
-    public AuthResponseDTO(boolean value){
+    public SignUpResponseDTO(boolean value){
         this.value = value;
     }
 

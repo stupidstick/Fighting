@@ -2,9 +2,9 @@ package dto;
 
 import java.io.Serializable;
 
-public class CreateLobbyResponse implements Serializable {
+public class CreateLobbyResponseDTO implements Serializable {
     private Boolean value;
-    public CreateLobbyResponse(Boolean value){
+    public CreateLobbyResponseDTO(Boolean value){
     this.value = value;
     }
 

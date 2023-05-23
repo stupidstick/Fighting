@@ -1,8 +1,12 @@
 package main;
 
 import client.Client;
-import controller.FightContoller;
 import javafx.application.Application;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -11,18 +15,15 @@ import java.io.IOException;
 
 public class Main extends Application {
     private static Client client;
-    private static Object object = new Object();
+    private static Object waiter;
+    private static Stage currentStage;
+    private static SimpleObjectProperty dispatcher;
     @Override
     public void start(Stage stage) throws IOException {
 
         client = new Client();
-
-        /*FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("Fight.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 800, 600);
-        stage.setTitle("Fighting");
-        stage.setScene(scene);
-        stage.setResizable(false);
-        stage.show();*/
+        waiter = new Object();
+        dispatcher = new SimpleObjectProperty(new Object());
         createIpChooserStage();
     }
 
@@ -33,17 +34,13 @@ public class Main extends Application {
     public static void createIpChooserStage() throws  IOException{
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("IpChooser.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 600, 400);
+
         Stage stage = new Stage();
         stage.setTitle("Fighting");
-        try{
-            object.wait();
-        }
-        catch (Exception exception){
-            System.out.println(exception.getMessage());
-        }
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
+        currentStage = stage;
     }
 
     public static void createAuthStage() throws  IOException{
@@ -54,6 +51,7 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
+        currentStage = stage;
     }
 
     public static void createMainStage() throws IOException{
@@ -64,6 +62,7 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
+        currentStage = stage;
     }
 
     public static void createFightingStage() throws IOException{
@@ -78,5 +77,33 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         launch();
+    }
+
+    public static Object getWaiter() {
+        return waiter;
+    }
+
+    public static void setWaiter(Object waiter) {
+        Main.waiter = waiter;
+    }
+
+    public static Object getDispatcher() {
+        return dispatcher.get();
+    }
+
+    public static SimpleObjectProperty dispatcherProperty() {
+        return dispatcher;
+    }
+
+    public static void setDispatcher(Object dispatcher) {
+        Main.dispatcher.set(dispatcher);
+    }
+
+    public static Stage getCurrentStage() {
+        return currentStage;
+    }
+
+    public static void setCurrentStage(Stage currentStage) {
+        Main.currentStage = currentStage;
     }
 }

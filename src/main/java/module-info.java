@@ -5,7 +5,8 @@ module fighting{
     requires org.postgresql.jdbc;
     requires java.sql;
 
-    opens controller;
+    exports controller;
+    opens controller to javafx.fxml;
     opens main;
     opens view;
     opens objects;

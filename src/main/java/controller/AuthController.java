@@ -1,17 +1,18 @@
 package controller;
 
-import dto.CommandDTO;
+import client.Client;
+import dto.SignInResponseDTO;
+import dto.SignUpResponseDTO;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import main.Main;
 
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 public class AuthController implements Initializable {
@@ -24,39 +25,63 @@ public class AuthController implements Initializable {
     @FXML
     private void signIn(ActionEvent event){
         try{
-            if (Main.getClient().signIn(loginField.getText(), passwordField.getText())){
-                infoLabel.setText("Login Successful");
-                ((Node) event.getSource()).getScene().getWindow().hide();
-                Main.getClient().start();
-                Main.createMainStage();
+            Main.getClient().signIn(loginField.getText(), passwordField.getText());
+            synchronized (Main.getWaiter()){
+                Main.getWaiter().wait();
             }
-            else {
-                infoLabel.setText("Wrong login or password");
-            }
-
         }
         catch (Exception exception){
             System.out.println(exception.getMessage());
         }
     }
 
+
     @FXML
-    private void reg(){
+    private void signUp(){
         try{
-            if (Main.getClient().register(loginField.getText(), passwordField.getText())){
-                infoLabel.setText("Registration complete");
-            }
-            else{
-                infoLabel.setText("OOPS");
-            }
+            Main.getClient().signUp(loginField.getText(), passwordField.getText());
         }
         catch (Exception exception){
             System.out.println(exception.getMessage());
         }
+    }
+
+    private void addClientDispatcherListener(){
+        Main.dispatcherProperty().addListener(new ChangeListener() {
+            @Override
+            public void changed(ObservableValue observableValue, Object o, Object t1) {
+                if (Main.getDispatcher() instanceof SignInResponseDTO){
+                    SignInResponseDTO response = (SignInResponseDTO) Main.getDispatcher();
+                    if (response.isValue()){
+                        Main.getCurrentStage().hide();
+                        try{
+                            Main.createMainStage();
+                        }
+                        catch (Exception exception){
+                            System.out.println(exception.getMessage());
+                        }
+                    }
+                    else{
+                        infoLabel.setText("Wrong login or password");
+                    }
+                }
+
+                if (Main.getDispatcher() instanceof SignUpResponseDTO){
+                    SignUpResponseDTO response = (SignUpResponseDTO) Main.getDispatcher();
+                    if (response.isValue()){
+                        infoLabel.setText("Registration complete");
+                    }
+                    else{
+                        infoLabel.setText("OOPS");
+                    }
+                }
+            }
+        });
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+       addClientDispatcherListener();
 
     }
 }
