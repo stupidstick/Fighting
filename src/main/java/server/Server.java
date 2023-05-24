@@ -24,7 +24,7 @@ public class Server {
     public static void main(String[] args){
         try{
             ServerSocket server = new ServerSocket(3345);
-
+            addLobbiesListener();
             Database.connection("192.168.0.11", "5432", "postgres", "admin");
             Database.createTable();
             while (true){
@@ -45,7 +45,7 @@ public class Server {
         }
     }
 
-    private void addLobbiesListener(){
+    private static void addLobbiesListener(){
         lobbies.addListener(new InvalidationListener() {
             @Override
             public void invalidated(Observable observable) {

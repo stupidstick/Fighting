@@ -1,7 +1,9 @@
 package controller;
 
+import client.Client;
 import dto.CreateLobbyResponseDTO;
 import dto.LobbiesListDTO;
+import dto.StartFightDTO;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -12,6 +14,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.MultipleSelectionModel;
 import javafx.stage.Stage;
 import main.Main;
 import view.MainView;
@@ -29,10 +32,9 @@ public class MainController extends MainView implements Initializable {
 
     @FXML
     private void join(ActionEvent event){
-        try{
-            FXMLLoader loader = new FXMLLoader(Main.class.getResource("Fight.fxml"));
-            Scene scene = new Scene(loader.load(), 800, 600);
-            ((Stage) (((Node) event.getSource()).getScene().getWindow())).setScene(scene);
+        try {
+            MultipleSelectionModel selectionModel = lobbiesListView.getSelectionModel();
+            Main.getClient().joinLobby(selectionModel.getSelectedItem().toString());
         }
         catch (Exception exception){
             System.out.println(exception.getMessage());
@@ -71,9 +73,18 @@ public class MainController extends MainView implements Initializable {
                         Scene scene = new Scene(loader.load(), 800, 600);
                         Main.getCurrentStage().setScene(scene);
                     }
+
                     if (Main.getDispatcher() instanceof LobbiesListDTO){
                         lobbiesList.setAll(((LobbiesListDTO) Main.getDispatcher()).getLobbies());
                     }
+
+                    if (Main.getDispatcher() instanceof StartFightDTO){
+                        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("Fight.fxml"));
+                        Scene scene = new Scene(fxmlLoader.load(), 800, 600);
+                        ((FightContoller) (fxmlLoader.getController())).setNames((StartFightDTO) Main.getDispatcher());
+                        Main.getCurrentStage().setScene(scene);
+                    }
+
                 }
                 catch (Exception exception){
                     System.out.println(exception.getMessage());

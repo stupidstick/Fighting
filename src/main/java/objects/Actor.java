@@ -16,14 +16,14 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.Timer;
 
-public class Actor extends Pane implements Serializable {
+public class Actor extends Pane{
+    private String name;
     private double hp;
     private String currentAction;
-    private EventHandler pressEvent;
-    private EventHandler releasedEvent;
     Thread actionThread;
     private double speed;
-        public Actor(double cordX) {
+        public Actor(double cordX, String name) {
+            this.name = name;
             hp = ActorConfig.getHp();
             currentAction = "idle";
             speed = ActorConfig.getSpeed();
@@ -32,40 +32,6 @@ public class Actor extends Pane implements Serializable {
             setStyle("-fx-background-color: red");
             actionThread = new Thread(actionDispatcher);
             actionThread.start();
-
-            pressEvent = new EventHandler() {
-                @Override
-                public void handle(Event event) {
-                    KeyEvent keyEvent = (KeyEvent) event;
-                    if (keyEvent.getCode() == KeyConfig.getMoveLeft()) {
-                        synchronized (currentAction) {
-                            currentAction = "moveLeft";
-                        }
-                    }
-                    if (keyEvent.getCode() == KeyConfig.getMoveRight()) {
-                        synchronized (currentAction) {
-                            currentAction = "moveRight";
-                        }
-                    }
-
-                }
-            };
-
-            releasedEvent = new EventHandler() {
-                @Override
-                public void handle(Event event) {
-                    KeyEvent keyEvent = (KeyEvent) event;
-
-
-
-                    if ((currentAction.equals("moveRight") && keyEvent.getCode() == KeyConfig.getMoveRight()) || (currentAction.equals("moveLeft") && keyEvent.getCode() == KeyConfig.getMoveLeft())){
-                        synchronized (currentAction) {
-                            currentAction = "idle";
-                        }
-                    }
-                }
-            };
-
         }
         public void setCord(double x){
             setLayoutX(x);
@@ -121,19 +87,12 @@ public class Actor extends Pane implements Serializable {
         this.speed = speed;
     }
 
-    public EventHandler getPressEvent() {
-        return pressEvent;
+
+    public String getName() {
+        return name;
     }
 
-    public void setPressEvent(EventHandler pressEvent) {
-        this.pressEvent = pressEvent;
-    }
-
-    public EventHandler getReleasedEvent() {
-        return releasedEvent;
-    }
-
-    public void setReleasedEvent(EventHandler releasedEvent) {
-        this.releasedEvent = releasedEvent;
+    public void setName(String name) {
+        this.name = name;
     }
 }

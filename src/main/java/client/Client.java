@@ -55,6 +55,29 @@ public class Client extends Thread {
         out.writeObject(request);
     }
 
+    public void joinLobby(String lobby) throws IOException{
+        JoinLobbyDTO request = new JoinLobbyDTO(lobby);
+        out.writeObject(request);
+    }
+
+    public void sendAction(String action){
+        try {
+            out.writeObject(new ActionDTO(action));
+        }
+        catch (Exception exception){
+            System.out.println(exception.getMessage());
+        }
+    }
+
+    public void sendPosition(double cordX){
+        try {
+            out.writeObject(new PositionDTO(cordX));
+        }
+        catch (Exception exception){
+            System.out.println(exception.getMessage());
+        }
+    }
+
     @Override
     public void run() {
         while (!socket.isClosed()){
@@ -73,7 +96,15 @@ public class Client extends Thread {
                 if (message instanceof LobbiesListDTO){
                     dispatchCommand(message);
                 }
-
+                if (message instanceof StartFightDTO){
+                    dispatchCommand(message);
+                }
+                if (message instanceof ActionDTO){
+                    dispatchCommand(message);
+                }
+                if (message instanceof PositionDTO){
+                    dispatchCommand(message);
+                }
             }
             catch (Exception exception){
                 System.out.println(exception.getMessage());
