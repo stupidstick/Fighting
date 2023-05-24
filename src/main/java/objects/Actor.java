@@ -3,6 +3,7 @@ package objects;
 import config.ActorConfig;
 import config.FightAreaConfig;
 import config.KeyConfig;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.Event;
@@ -48,19 +49,25 @@ public class Actor extends Pane{
                 long now = new Date().getTime();
                 if (now - lastUpdate.get() > interval.get()){
                     synchronized (currentAction){
-                        if (currentAction.equals("moveRight")){
-                            setLayoutX(getLayoutX() + speed);
-                            if (getLayoutX() + getPrefWidth() > FightAreaConfig.getWidth()){
-                                setLayoutX(FightAreaConfig.getWidth() - getPrefWidth());
-                            }
-                        }
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (currentAction.equals("moveRight")){
+                                    setLayoutX(getLayoutX() + speed);
+                                    if (getLayoutX() + getPrefWidth() > FightAreaConfig.getWidth()){
+                                        setLayoutX(FightAreaConfig.getWidth() - getPrefWidth());
+                                    }
+                                }
 
-                        if (currentAction.equals("moveLeft")){
-                            setLayoutX(getLayoutX() - speed);
-                            if (getLayoutX() < 0){
-                                setLayoutX(0);
+                                if (currentAction.equals("moveLeft")){
+                                    setLayoutX(getLayoutX() - speed);
+                                    if (getLayoutX() < 0){
+                                        setLayoutX(0);
+                                    }
+                                }
                             }
-                        }
+                        });
+
                     }
                     lastUpdate.set(now);
                 }
