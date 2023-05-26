@@ -78,12 +78,20 @@ public class Client extends Thread {
         }
     }
 
+    public void sendHP(double leftHP, double rightHP){
+        try{
+            out.writeObject(new HpInfoDTO(leftHP, rightHP));
+        }
+        catch (Exception exception){
+            System.out.println(exception.getMessage());
+        }
+    }
+
     @Override
     public void run() {
         while (!socket.isClosed()){
             try{
                 Object message = in.readObject();
-                System.out.println(message);
                 if (message instanceof SignInResponseDTO){
                     dispatchCommand(message);
                 }
@@ -103,6 +111,9 @@ public class Client extends Thread {
                     dispatchCommand(message);
                 }
                 if (message instanceof PositionDTO){
+                    dispatchCommand(message);
+                }
+                if (message instanceof HpInfoDTO){
                     dispatchCommand(message);
                 }
             }

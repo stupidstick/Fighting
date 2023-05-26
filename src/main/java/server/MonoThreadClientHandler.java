@@ -61,6 +61,10 @@ public class MonoThreadClientHandler extends Thread{
                 if (message instanceof PositionDTO){
                     oppClientHandler.sendPosition((PositionDTO) message);
                 }
+
+                if (message instanceof HpInfoDTO){
+                    oppClientHandler.sendHP((HpInfoDTO) message);
+                }
             }
         }
         catch (Exception exception){
@@ -153,6 +157,15 @@ public class MonoThreadClientHandler extends Thread{
     private void sendPosition(PositionDTO position){
         try {
             out.writeObject(position);
+        }
+        catch (Exception exception){
+            System.out.println(exception.getMessage());
+        }
+    }
+
+    private void sendHP(HpInfoDTO hpInfoDTO){
+        try{
+            out.writeObject(hpInfoDTO);
         }
         catch (Exception exception){
             System.out.println(exception.getMessage());

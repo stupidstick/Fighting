@@ -8,9 +8,13 @@ import javafx.scene.layout.Pane;
 
 public abstract class FightView {
     @FXML
-    protected Label firstActorLabel;
+    protected Label leftActorLabel;
     @FXML
-    protected Label secondActorLabel;
+    protected Label rightActorLabel;
+    @FXML
+    protected Label leftHP;
+    @FXML
+    protected Label rightHP;
     @FXML
     public Pane fightArea;
     @FXML

@@ -5,7 +5,9 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.FightContoller">
@@ -15,20 +17,73 @@
             <Image url="@../fight/background.png" />
          </image>
       </ImageView>
-      <Pane fx:id="fightArea" prefHeight="500.0" prefWidth="800.0" />
+      <Pane fx:id="fightArea" layoutX="6.0" prefHeight="500.0" prefWidth="800.0">
+         <children>
+            <Pane layoutX="284.0" layoutY="225.0" maxHeight="100.0" maxWidth="100.0" prefHeight="100.0" prefWidth="100.0" />
+            <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="42.0" layoutY="350.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../fight/leftActor/idle.gif" />
+               </image>
+            </ImageView>
+            <Pane layoutX="423.0" layoutY="214.0" prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <ImageView fitHeight="200.0" fitWidth="426.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../fight/rightActor/attack.gif" />
+                     </image>
+                  </ImageView>
+               </children>
+            </Pane>
+         </children></Pane>
       <Button layoutX="37.0" layoutY="525.0" mnemonicParsing="false" text="Button" />
       <AnchorPane prefHeight="60.0" prefWidth="800.0">
          <children>
-            <Label fx:id="firstActorLabel" layoutX="46.0" layoutY="13.0" text="Label" textFill="WHITE">
-               <font>
-                  <Font name="System Italic" size="24.0" />
-               </font>
-            </Label>
-            <Label fx:id="secondActorLabel" layoutX="691.0" layoutY="13.0" prefHeight="35.0" prefWidth="56.0" text="Label" textFill="WHITE">
-               <font>
-                  <Font name="System Italic" size="24.0" />
-               </font>
-            </Label>
+            <VBox layoutX="680.0" layoutY="4.0" prefHeight="60.0" prefWidth="100.0">
+               <children>
+                  <Label fx:id="rightActorLabel" prefHeight="35.0" prefWidth="160.0" style="-fx-alignment: center;" text="Label" textAlignment="CENTER" textFill="WHITE">
+                     <font>
+                        <Font name="System Italic" size="24.0" />
+                     </font>
+                  </Label>
+                  <HBox alignment="TOP_CENTER" prefHeight="33.0" prefWidth="100.0">
+                     <children>
+                        <Label fx:id="rightHP" text="100" textFill="WHITE">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                        </Label>
+                        <Label text="HP" textFill="WHITE">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <VBox layoutX="14.0" layoutY="4.0" prefHeight="60.0" prefWidth="100.0">
+               <children>
+                  <Label fx:id="leftActorLabel" prefHeight="35.0" prefWidth="160.0" style="-fx-alignment: center;" text="Label" textAlignment="CENTER" textFill="WHITE">
+                     <font>
+                        <Font name="System Italic" size="24.0" />
+                     </font>
+                  </Label>
+                  <HBox alignment="TOP_CENTER" prefHeight="33.0" prefWidth="100.0">
+                     <children>
+                        <Label fx:id="leftHP" text="100" textFill="WHITE">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                        </Label>
+                        <Label text="HP" textFill="WHITE">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
          </children>
       </AnchorPane>
    </children>

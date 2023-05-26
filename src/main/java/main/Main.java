@@ -2,11 +2,7 @@ package main;
 
 import client.Client;
 import javafx.application.Application;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -20,7 +16,6 @@ public class Main extends Application {
     private static SimpleObjectProperty dispatcher;
     @Override
     public void start(Stage stage) throws IOException {
-
         client = new Client();
         waiter = new Object();
         dispatcher = new SimpleObjectProperty(new Object());

@@ -5,11 +5,17 @@ public class ActorConfig {
     private static double height;
     private static double speed;
     private static double hp;
+    private static double blinkDistance;
+    private static double attackDistance;
+    private static double damage;
     static{
         hp = 100;
-        width = 50;
-        height = 100;
+        width = 75;
+        height = 150;
         speed = 5;
+        blinkDistance = 200;
+        attackDistance = 50;
+        damage = 20;
     }
 
     public static double getWidth() {
@@ -42,5 +48,30 @@ public class ActorConfig {
 
     public static void setHp(double hp) {
         ActorConfig.hp = hp;
+    }
+
+    public static double getBlinkDistance() {
+        return blinkDistance;
+    }
+
+    public static void setBlinkDistance(double blinkDistance) {
+        ActorConfig.blinkDistance = blinkDistance;
+    }
+
+    public static double getAttackDistance() {
+        return attackDistance;
+    }
+
+    public static void setAttackDistance(double attackDistance) {
+        ActorConfig.attackDistance = attackDistance;
+    }
+
+
+    public static double getDamage() {
+        return damage;
+    }
+
+    public static void setDamage(double damage) {
+        ActorConfig.damage = damage;
     }
 }
