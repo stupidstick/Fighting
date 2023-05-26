@@ -2,11 +2,15 @@ package objects;
 
 import config.ActorConfig;
 import config.KeyConfig;
+import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.input.KeyEvent;
 import main.Main;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActor extends Actor{
     private EventHandler pressEvent;
@@ -23,35 +27,44 @@ public class MainActor extends Actor{
             @Override
             public void handle(Event event) {
                 KeyEvent keyEvent = (KeyEvent) event;
-                if (keyEvent.getCode() == KeyConfig.getMoveLeft()) {
-                    synchronized (getCurrentAction()) {
-                        setCurrentAction("moveLeft");
-                        Main.getClient().sendAction(getCurrentAction());
+                synchronized (getCurrentAction()){
+                    if (!getCurrentAction().equals("attack")){
+                        if (keyEvent.getCode() == KeyConfig.getMoveLeft()) {
+                            synchronized (getCurrentAction()) {
+                                setCurrentAction("moveLeft");
+                                Main.getClient().sendAction(getCurrentAction());
+                            }
+                        }
+
+                        if (keyEvent.getCode() == KeyConfig.getMoveRight()) {
+                            synchronized (getCurrentAction()) {
+                                setCurrentAction("moveRight");
+                                Main.getClient().sendAction(getCurrentAction());
+                            }
+                        }
+
+                        if (keyEvent.getCode() == KeyConfig.getBlink()){
+                            synchronized (getCurrentAction()){
+                                setCurrentAction("blink");
+                                Main.getClient().sendAction(getCurrentAction());
+                            }
+
+                        }
+                        if (keyEvent.getCode() == KeyConfig.getAttack() ){
+                            synchronized (getCurrentAction()){
+                                if (!getCurrentAction().equals("attack")){
+                                    setCurrentAction("attack");
+                                    Main.getClient().sendAction(getCurrentAction());
+                                    Timer timer = new Timer();
+                                    System.out.println("start");
+                                    timer.schedule(dispatchAttack(), ActorConfig.getAttackDelay());
+                                }
+                                //attackDispatcher();
+                            }
+                        }
                     }
                 }
 
-                if (keyEvent.getCode() == KeyConfig.getMoveRight()) {
-                    synchronized (getCurrentAction()) {
-                        setCurrentAction("moveRight");
-                        Main.getClient().sendAction(getCurrentAction());
-                    }
-                }
-
-                if (keyEvent.getCode() == KeyConfig.getBlink()){
-                    synchronized (getCurrentAction()){
-                        setCurrentAction("blink");
-                        Main.getClient().sendAction(getCurrentAction());
-                    }
-
-                }
-
-                if (keyEvent.getCode() == KeyConfig.getAttack()){
-                    synchronized (getCurrentAction()){
-                        setCurrentAction("attack");
-                        Main.getClient().sendAction(getCurrentAction());
-                        attackDispatcher();
-                    }
-                }
 
             }
         };
@@ -73,22 +86,48 @@ public class MainActor extends Actor{
         };
     }
 
+
+    private TimerTask dispatchAttack(){
+        return new TimerTask() {
+            @Override
+            public void run() {
+                try{
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            int orientation = (getNodeOrientation() == NodeOrientation.LEFT_TO_RIGHT) ? 1 : -1;
+                            setWidth(getWidth() + ActorConfig.getAttackDistance());
+
+                            if (orientation == -1){
+                                setLayoutX(getLayoutX() - ActorConfig.getAttackDistance());
+                            }
+
+                            if (getBoundsInParent().intersects(getOpp().getBoundsInParent())){
+                                getOpp().setHp(getOpp().getHp() - ActorConfig.getDamage());
+                            }
+
+                            if (orientation == -1){
+                                setLayoutX(getLayoutX() + ActorConfig.getAttackDistance());
+                            }
+                            setWidth(getWidth() - ActorConfig.getAttackDistance());
+                        }
+                    });
+                    Thread.sleep(ActorConfig.getAttackDelay());
+                    synchronized (getCurrentAction()){
+                        setCurrentAction("idle");
+                        System.out.println("stop");
+                        Main.getClient().sendAction(getCurrentAction());
+                    }
+                }
+                catch (Exception exception){
+                    System.out.println(exception.getMessage());
+                }
+            }
+        };
+    }
+
     private void attackDispatcher(){
-        int orientation = (getNodeOrientation() == NodeOrientation.LEFT_TO_RIGHT) ? 1 : -1;
-        setWidth(getWidth() + ActorConfig.getAttackDistance());
 
-        if (orientation == -1){
-            setLayoutX(getLayoutX() - ActorConfig.getAttackDistance());
-        }
-
-        if (getBoundsInParent().intersects(getOpp().getBoundsInParent())){
-            getOpp().setHp(getOpp().getHp() - ActorConfig.getDamage());
-        }
-
-        if (orientation == -1){
-            setLayoutX(getLayoutX() + ActorConfig.getAttackDistance());
-        }
-        setWidth(getWidth() - ActorConfig.getAttackDistance());
     }
     
     

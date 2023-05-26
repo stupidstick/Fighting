@@ -49,7 +49,7 @@ public class Main extends Application {
         currentStage = stage;
     }
 
-    public static void createMainStage() throws IOException{
+        public static void createMainStage() throws IOException{
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("Main.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 800, 600);
         Stage stage = new Stage();

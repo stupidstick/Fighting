@@ -8,6 +8,7 @@ public class ActorConfig {
     private static double blinkDistance;
     private static double attackDistance;
     private static double damage;
+    private static int attackDelay;
     static{
         hp = 100;
         width = 75;
@@ -16,6 +17,7 @@ public class ActorConfig {
         blinkDistance = 200;
         attackDistance = 50;
         damage = 20;
+        attackDelay = 500;
     }
 
     public static double getWidth() {
@@ -73,5 +75,13 @@ public class ActorConfig {
 
     public static void setDamage(double damage) {
         ActorConfig.damage = damage;
+    }
+
+    public static int getAttackDelay() {
+        return attackDelay;
+    }
+
+    public static void setAttackDelay(int attackDelay) {
+        ActorConfig.attackDelay = attackDelay;
     }
 }
