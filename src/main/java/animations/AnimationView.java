@@ -53,14 +53,18 @@ public class AnimationView extends ImageView {
                     currentAnimation = animations.get("idle");
                     setImage(currentAnimation.getAnimation());
                 }
-                /*if (actor.getCurrentAction().equals("moveLeft") || actor.getCurrentAction().equals("moveRight")){
-                    setImage(animations.get("move").getAnimation());
-                }*/
+                if (actor.getCurrentAction().equals("moveLeft") || actor.getCurrentAction().equals("moveRight")){
+                    currentAnimation = animations.get("move");
+                    setImage(currentAnimation.getAnimation());
+                }
                 if (actor.getCurrentAction().equals("attack")){
                     currentAnimation = animations.get("attack");
                     setImage(currentAnimation.getAnimation());
                 }
-
+                if (actor.getCurrentAction().equals("death")){
+                    currentAnimation = animations.get("death");
+                    setImage(currentAnimation.getAnimation());
+                }
                 updatePosition();
             }
         });

@@ -9,13 +9,17 @@ import javafx.scene.input.KeyEvent;
 import main.Main;
 
 public class MainActor extends Actor{
+    private EventHandler pressEvent;
+    private EventHandler releasedEvent;
+    
     public MainActor(double cordX, String name) {
         super(cordX, name);
+        setPressEvent();
+        setReleasedEvent();
     }
 
-
-    public EventHandler getPressEvent(){
-        return new EventHandler() {
+    private void setPressEvent(){
+        pressEvent = new EventHandler() {
             @Override
             public void handle(Event event) {
                 KeyEvent keyEvent = (KeyEvent) event;
@@ -52,9 +56,9 @@ public class MainActor extends Actor{
             }
         };
     }
-
-    public EventHandler getReleaseEvent(){
-        return new EventHandler() {
+    
+    private void setReleasedEvent(){
+        releasedEvent = new EventHandler() {
             @Override
             public void handle(Event event) {
                 KeyEvent keyEvent = (KeyEvent) event;
@@ -67,7 +71,6 @@ public class MainActor extends Actor{
                 }
             }
         };
-
     }
 
     private void attackDispatcher(){
@@ -86,6 +89,15 @@ public class MainActor extends Actor{
             setLayoutX(getLayoutX() + ActorConfig.getAttackDistance());
         }
         setWidth(getWidth() - ActorConfig.getAttackDistance());
+    }
+    
+    
+    public EventHandler getPressEvent(){
+        return pressEvent;
+    }
+
+    public EventHandler getReleasedEvent(){
+        return releasedEvent;
     }
 
 }

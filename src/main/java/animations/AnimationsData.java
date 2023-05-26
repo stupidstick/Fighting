@@ -37,6 +37,30 @@ public class AnimationsData {
         return animation;
     }
 
+    private static Animation getMoveAnimation(String path){
+        Animation animation;
+        try {
+            animation = new Animation("move", new Image(new FileInputStream(path + "move.gif")), AnimationConfig.getMoveShift());
+        }
+        catch (Exception exception){
+            System.out.println(exception.getMessage());
+            animation = null;
+        }
+        return animation;
+    }
+
+    private static Animation getDeathAnimation(String path){
+        Animation animation;
+        try {
+            animation = new Animation("death", new Image(new FileInputStream(path + "death.gif")), AnimationConfig.getDeathShift());
+        }
+        catch (Exception exception){
+            System.out.println(exception.getMessage());
+            animation = null;
+        }
+        return animation;
+    }
+
     private static Map<String, Animation> getAnimations(String path){
         Map<String, Animation> animations = new HashMap<>();
 
@@ -44,6 +68,12 @@ public class AnimationsData {
         animations.put(animation.getName(), animation);
 
         animation = getAttackAnimation(path);
+        animations.put(animation.getName(), animation);
+
+        animation = getMoveAnimation(path);
+        animations.put(animation.getName(), animation);
+
+        animation = getDeathAnimation(path);
         animations.put(animation.getName(), animation);
 
         return animations;

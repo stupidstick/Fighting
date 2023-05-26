@@ -53,46 +53,52 @@ public class Actor extends Pane{
                         Platform.runLater(new Runnable() {
                             @Override
                             public void run() {
-                                if (currentAction.get().equals("moveRight")){
-                                    setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
-                                    setLayoutX(getLayoutX() + speed);
-                                    if (getLayoutX() + getPrefWidth() > FightAreaConfig.getWidth()){
-                                        setLayoutX(FightAreaConfig.getWidth() - getPrefWidth());
-                                    }
-                                    if (getBoundsInParent().intersects(opp.getBoundsInParent())){
-                                        setLayoutX(getLayoutX() - speed);
-                                    }
-                                }
-
-                                if (currentAction.get().equals("moveLeft")){
-                                    setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-                                    setLayoutX(getLayoutX() - speed);
-                                    if (getLayoutX() < 0){
-                                        setLayoutX(0);
-                                    }
-                                    if (getBoundsInParent().intersects(opp.getBoundsInParent())){
+                                if (!currentAction.get().equals("attack")){
+                                    if (currentAction.get().equals("moveRight")){
+                                        setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
                                         setLayoutX(getLayoutX() + speed);
+                                        if (getLayoutX() + getPrefWidth() > FightAreaConfig.getWidth()){
+                                            setLayoutX(FightAreaConfig.getWidth() - getPrefWidth());
+                                        }
+                                        if (getBoundsInParent().intersects(opp.getBoundsInParent())){
+                                            setLayoutX(getLayoutX() - speed);
+                                        }
+                                    }
+
+                                    if (currentAction.get().equals("moveLeft")){
+                                        setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                                        setLayoutX(getLayoutX() - speed);
+                                        if (getLayoutX() < 0){
+                                            setLayoutX(0);
+                                        }
+                                        if (getBoundsInParent().intersects(opp.getBoundsInParent())){
+                                            setLayoutX(getLayoutX() + speed);
+                                        }
+                                    }
+
+                                    if (currentAction.get().equals("blink")){
+                                        int orientation = (getNodeOrientation() == NodeOrientation.LEFT_TO_RIGHT) ? 1 : -1;
+                                        setLayoutX(getLayoutX() + orientation * ActorConfig.getBlinkDistance());
+                                        if (getLayoutX() < 0){
+                                            setLayoutX(0);
+                                        }
+                                        else if (getLayoutX() + getPrefWidth() > FightAreaConfig.getWidth()){
+                                            setLayoutX(FightAreaConfig.getWidth() - getPrefWidth());
+                                        }
+                                        if (getBoundsInParent().intersects(opp.getBoundsInParent())){
+                                            if (orientation == 1){
+                                                setLayoutX(opp.getLayoutX() - speed - getWidth());
+                                            }
+                                            else{
+                                                setLayoutX(opp.getLayoutX() + speed + getWidth());
+                                            }
+                                        }
+                                        setCurrentAction("idle");
                                     }
                                 }
 
-                                if (currentAction.get().equals("blink")){
-                                    int orientation = (getNodeOrientation() == NodeOrientation.LEFT_TO_RIGHT) ? 1 : -1;
-                                    setLayoutX(getLayoutX() + orientation * ActorConfig.getBlinkDistance());
-                                    if (getLayoutX() < 0){
-                                        setLayoutX(0);
-                                    }
-                                    else if (getLayoutX() + getPrefWidth() > FightAreaConfig.getWidth()){
-                                        setLayoutX(FightAreaConfig.getWidth() - getPrefWidth());
-                                    }
-                                    if (getBoundsInParent().intersects(opp.getBoundsInParent())){
-                                        if (orientation == 1){
-                                            setLayoutX(opp.getLayoutX() - speed - getWidth());
-                                        }
-                                        else{
-                                            setLayoutX(opp.getLayoutX() + speed + getWidth());
-                                        }
-                                    }
-                                    setCurrentAction("idle");
+                                if (currentAction.get().equals("death")){
+
                                 }
                             }
                         });

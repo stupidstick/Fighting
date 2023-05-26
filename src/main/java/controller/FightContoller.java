@@ -52,7 +52,7 @@ public class FightContoller extends FightView implements Initializable {
 
         mainActor.setStyle("-fx-background-color: blue");
         mainPane.addEventFilter(KeyEvent.KEY_PRESSED, mainActor.getPressEvent());
-        mainPane.addEventFilter(KeyEvent.KEY_RELEASED, mainActor.getReleaseEvent());
+        mainPane.addEventFilter(KeyEvent.KEY_RELEASED, mainActor.getReleasedEvent());
         leftActorLabel.setText(actors.get("left").getName());
         rightActorLabel.setText(actors.get("right").getName());
     }
@@ -66,8 +66,7 @@ public class FightContoller extends FightView implements Initializable {
                 leftHP.setText(String.valueOf(actors.get("left").getHp()));
                 if (actors.get("left").getHp() <= 0){
                     try{
-                        Main.getCurrentStage().hide();
-                        Main.createMainStage();
+                        playDeath(actors.get("left"));
                     }
                     catch (Exception exception){
                         System.out.println(exception.getMessage());
@@ -82,8 +81,7 @@ public class FightContoller extends FightView implements Initializable {
                 rightHP.setText(String.valueOf(actors.get("right").getHp()));
                 if (actors.get("right").getHp() <= 0){
                     try{
-                        Main.getCurrentStage().hide();
-                        Main.createMainStage();
+                        playDeath(actors.get("right"));
                     }
                     catch (Exception exception){
                         System.out.println(exception.getMessage());
@@ -91,6 +89,15 @@ public class FightContoller extends FightView implements Initializable {
                 }
             }
         });
+    }
+
+    private void playDeath(Actor actor){
+        synchronized (actor.getCurrentAction()){
+            actor.setCurrentAction("death");
+
+            mainPane.removeEventFilter(KeyEvent.KEY_PRESSED, mainActor.getPressEvent());
+            mainPane.removeEventFilter(KeyEvent.KEY_RELEASED, mainActor.getPressEvent());
+        }
     }
 
     private void addClientDispatcherListener(){
