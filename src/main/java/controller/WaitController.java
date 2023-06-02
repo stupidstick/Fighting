@@ -24,6 +24,11 @@ public class WaitController implements Initializable {
         });
     }
 
+    public void exit(){
+        Main.getClient().close();
+        System.exit(0);
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 

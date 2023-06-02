@@ -14,22 +14,23 @@ import java.io.FileInputStream;
 import java.util.Date;
 import java.util.Map;
 
-public class Actor extends Pane{
+public abstract class Actor extends Pane{
     private Actor opp;
     private String name;
     private DoubleProperty hp;
     private StringProperty currentAction;
     Thread actionThread;
     private double speed;
+    private LongProperty blinkLastUse;
     public Actor(double cordX, String name) {
         this.name = name;
+        blinkLastUse = new SimpleLongProperty(-1);
         hp = new SimpleDoubleProperty(ActorConfig.getHp());
         currentAction = new SimpleStringProperty("idle");
         speed = ActorConfig.getSpeed();
         setPrefSize(ActorConfig.getWidth(), ActorConfig.getHeight());
         setMaxSize(ActorConfig.getWidth(), ActorConfig.getHeight());
         setCord(cordX);
-        setStyle("-fx-background-color: red");
         actionThread = new Thread(actionDispatcher);
         actionThread.start();
     }
@@ -50,9 +51,14 @@ public class Actor extends Pane{
                 long now = new Date().getTime();
                 if (now - lastUpdate.get() > interval.get()){
                     synchronized (currentAction){
+                        if (currentAction.equals("end")){
+                            break;
+                        }
                         Platform.runLater(new Runnable() {
                             @Override
                             public void run() {
+
+
                                 if (!currentAction.get().equals("attack")){
                                     if (currentAction.get().equals("moveRight")){
                                         setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
@@ -157,5 +163,17 @@ public class Actor extends Pane{
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public long getBlinkLastUse() {
+        return blinkLastUse.get();
+    }
+
+    public LongProperty blinkLastUseProperty() {
+        return blinkLastUse;
+    }
+
+    public void setBlinkLastUse(long blinkLastUse) {
+        this.blinkLastUse.set(blinkLastUse);
     }
 }

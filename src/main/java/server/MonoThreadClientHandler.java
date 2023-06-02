@@ -2,7 +2,6 @@ package server;
 
 import database.Database;
 import dto.*;
-import main.Main;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -34,12 +33,12 @@ public class MonoThreadClientHandler extends Thread{
                 Object message = in.readObject();
 
                 if (message instanceof SignInDTO){
-                    logInUser(((SignInDTO) message).getUser());
+                    signIn(((SignInDTO) message).getUser());
                 }
 
 
                 if (message instanceof SignUpDTO){
-                    regUser(((SignUpDTO) message).getUser());
+                    signUp(((SignUpDTO) message).getUser());
                 }
 
                 if (message instanceof CreateLobbyDTO){
@@ -65,7 +64,11 @@ public class MonoThreadClientHandler extends Thread{
                 if (message instanceof HpInfoDTO){
                     oppClientHandler.sendHP((HpInfoDTO) message);
                 }
+                Server.getLobbies().forEach(obj -> System.out.println(obj.getUsername()));
+                System.out.println("-----------");
             }
+            Server.getClients().remove(this);
+            Server.getLobbies().remove(this);
         }
         catch (Exception exception){
             System.out.println(exception.getMessage());
@@ -75,16 +78,18 @@ public class MonoThreadClientHandler extends Thread{
 
 
     public void sendLobbiesList(){
-        List<String> lobbies = Server.getLobbies().stream().map(MonoThreadClientHandler::getUsername).toList();
-        try{
-            out.writeObject(new LobbiesListDTO(lobbies));
-        }
-        catch (Exception exception){
-            System.out.println(exception.getMessage());
+        synchronized (Server.getLobbies()){
+            List<String> lobbies = Server.getLobbies().stream().map(MonoThreadClientHandler::getUsername).toList();
+            try{
+                out.writeObject(new LobbiesListDTO(lobbies));
+            }
+            catch (Exception exception){
+                System.out.println(exception.getMessage());
+            }
         }
     }
 
-    private void regUser(UserDTO user){
+    private void signUp(UserDTO user){
         try{
             SignUpResponseDTO response = new SignUpResponseDTO(Database.addUser(user.getLogin(), user.getPassword()));
             out.writeObject(response);
@@ -94,13 +99,27 @@ public class MonoThreadClientHandler extends Thread{
         }
     }
 
-    private void logInUser(UserDTO user){
+    private boolean checkUser(String username){
+        for (MonoThreadClientHandler client: Server.getClients()){
+            try {
+                if (client.getUsername().equals(username)){
+                    return true;
+                }
+            }
+            catch (Exception ignored){}
+        }
+        return false;
+    }
+
+    private void signIn(UserDTO user){
         try{
-            SignInResponseDTO response = new SignInResponseDTO(Database.checkUser(user.getLogin(), user.getPassword()));
-            if (response.isValue()){
+            if (Database.checkUser(user.getLogin(), user.getPassword()) && !checkUser(user.getLogin())){
+                out.writeObject(new SignInResponseDTO(true));
                 username = user.getLogin();
             }
-            out.writeObject(response);
+            else {
+                out.writeObject(new SignInResponseDTO(false));
+            }
         }
         catch (Exception exception){
             System.out.println(exception.getMessage());
@@ -109,12 +128,14 @@ public class MonoThreadClientHandler extends Thread{
 
     private void createLobby(){
         try {
-            if (!Server.getLobbies().contains(this)){
-                Server.getLobbies().add(this);
-                out.writeObject(new CreateLobbyResponseDTO(true));
-            }
-            else{
-                out.writeObject(new CreateLobbyResponseDTO(false));
+            synchronized (Server.getLobbies()){
+                if (!Server.getLobbies().contains(this)){
+                    Server.getLobbies().add(this);
+                    out.writeObject(new CreateLobbyResponseDTO(true));
+                }
+                else{
+                    out.writeObject(new CreateLobbyResponseDTO(false));
+                }
             }
         }
         catch (Exception exception){
@@ -129,7 +150,9 @@ public class MonoThreadClientHandler extends Thread{
                 oppClientHandler.setOppClientHandler(this);
                 startFight(false);
                 oppClientHandler.startFight(true);
-                Server.getLobbies().remove(oppClientHandler);
+                synchronized (Server.getLobbies()){
+                    Server.getLobbies().remove(oppClientHandler);
+                }
                 break;
             }
         }

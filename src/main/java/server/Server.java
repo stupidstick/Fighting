@@ -11,6 +11,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Server {
     public static List<MonoThreadClientHandler> clients;
@@ -23,9 +24,13 @@ public class Server {
 
     public static void main(String[] args){
         try{
-            ServerSocket server = new ServerSocket(3345);
+            Scanner in = new Scanner(System.in);
+            System.out.println("Input a port: ");
+            ServerSocket server = new ServerSocket(in.nextInt());
+            System.out.println("Input a database (ip port user password)");
             addLobbiesListener();
-            Database.connection("192.168.0.11", "5432", "postgres", "admin");
+            //Database.connection("192.168.0.11", "5432", "postgres", "admin");
+            Database.connection(in.next(), in.next(), in.next(), in.next());
             Database.createTable();
             while (true){
                 Socket client = server.accept();
@@ -42,6 +47,7 @@ public class Server {
         }
         catch (Exception exception){
             System.out.println(exception.getMessage());
+            Database.closeDB();
         }
     }
 
@@ -50,6 +56,7 @@ public class Server {
             @Override
             public void invalidated(Observable observable) {
                 clients.forEach(MonoThreadClientHandler::sendLobbiesList);
+                lobbies.forEach(obj -> System.out.println(obj.getUsername()));
             }
         });
     }

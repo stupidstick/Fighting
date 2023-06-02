@@ -1,6 +1,9 @@
 package main;
 
 import client.Client;
+import controller.AuthController;
+import controller.FightContoller;
+import controller.MainController;
 import javafx.application.Application;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXMLLoader;
@@ -46,6 +49,9 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
+        stage.setOnCloseRequest(windowEvent -> {
+            ((AuthController) fxmlLoader.getController()).exit();
+        });
         currentStage = stage;
     }
 
@@ -57,6 +63,9 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
+            stage.setOnCloseRequest(windowEvent -> {
+                ((MainController) fxmlLoader.getController()).exit();
+            });
         currentStage = stage;
     }
 
@@ -68,6 +77,9 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
+        stage.setOnCloseRequest(windowEvent -> {
+            ((FightContoller) fxmlLoader.getController()).exit();
+        });
         currentStage = stage;
     }
 

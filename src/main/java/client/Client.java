@@ -119,6 +119,7 @@ public class Client extends Thread {
             }
             catch (Exception exception){
                 System.out.println(exception.getMessage());
+                System.exit(0);
             }
         }
     }

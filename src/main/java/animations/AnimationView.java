@@ -1,5 +1,7 @@
 package animations;
 
+import config.ActorConfig;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.NodeOrientation;
@@ -7,9 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import objects.Actor;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class AnimationView extends ImageView {
     private Actor actor;
@@ -18,15 +18,11 @@ public class AnimationView extends ImageView {
     public AnimationView(Actor actor, Map<String, Animation> animations){
         this.actor = actor;
         this.animations = animations;
-        setImage(animations.get("idle").getAnimation());
-        currentAnimation = animations.get("idle");
+        currentAnimation = animations.get(actor.getCurrentAction());
+        setImage(currentAnimation.getAnimation());
         updatePosition();
         setPositionListener();
         setActionListener();
-    }
-    public void setStartCord(){
-        setLayoutX(actor.getLayoutX());
-        setLayoutY(actor.getLayoutY());
     }
 
     public void setPositionListener(){
@@ -64,10 +60,27 @@ public class AnimationView extends ImageView {
                 if (actor.getCurrentAction().equals("death")){
                     currentAnimation = animations.get("death");
                     setImage(currentAnimation.getAnimation());
+                    new Timer().schedule(getFinalDeath(), ActorConfig.getFinalDeathDelay());
                 }
                 updatePosition();
             }
         });
+    }
+
+    private TimerTask getFinalDeath(){
+        return new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        currentAnimation = animations.get("finalDeath");
+                        setImage(currentAnimation.getAnimation());
+                        updatePosition();
+                    }
+                });
+            }
+        };
     }
 
 

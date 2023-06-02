@@ -1,9 +1,9 @@
-package dto;
+    package dto;
 
-import java.io.Serializable;
+    import java.io.Serializable;
 
-public class CreateLobbyDTO implements Serializable {
-    public CreateLobbyDTO(){
-
+    public class CreateLobbyDTO implements Serializable {
+        public CreateLobbyDTO(){
+    
+        }
     }
-}

@@ -61,6 +61,18 @@ public class AnimationsData {
         return animation;
     }
 
+    private static Animation getFinalDeathAnimation(String path){
+        Animation animation;
+        try {
+            animation = new Animation("finalDeath", new Image(new FileInputStream(path + "finalDeath.png")), AnimationConfig.getFinalDeathShift());
+        }
+        catch (Exception exception){
+            System.out.println(exception.getMessage());
+            animation = null;
+        }
+        return animation;
+    }
+
     private static Map<String, Animation> getAnimations(String path){
         Map<String, Animation> animations = new HashMap<>();
 
@@ -76,6 +88,8 @@ public class AnimationsData {
         animation = getDeathAnimation(path);
         animations.put(animation.getName(), animation);
 
+        animation = getFinalDeathAnimation(path);
+        animations.put(animation.getName(), animation);
         return animations;
     }
 

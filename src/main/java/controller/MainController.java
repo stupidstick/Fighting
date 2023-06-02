@@ -1,6 +1,5 @@
 package controller;
 
-import client.Client;
 import dto.CreateLobbyResponseDTO;
 import dto.LobbiesListDTO;
 import dto.StartFightDTO;
@@ -22,6 +21,7 @@ import java.util.ResourceBundle;
 
 public class MainController extends MainView implements Initializable {
     private ObservableList<String> lobbiesList;
+    private ChangeListener clientDispatcherListener;
 
     private void setLobbiesList(){
         lobbiesList = FXCollections.observableArrayList();
@@ -33,6 +33,9 @@ public class MainController extends MainView implements Initializable {
         try {
             MultipleSelectionModel selectionModel = lobbiesListView.getSelectionModel();
             Main.getClient().joinLobby(selectionModel.getSelectedItem().toString());
+            synchronized (Main.getWaiter()){
+                Main.getWaiter().wait();
+            }
         }
         catch (Exception exception){
             System.out.println(exception.getMessage());
@@ -62,7 +65,7 @@ public class MainController extends MainView implements Initializable {
     }
 
     private void addClientDispatcherListener(){
-        Main.dispatcherProperty().addListener(new ChangeListener() {
+        clientDispatcherListener = new ChangeListener() {
             @Override
             public void changed(ObservableValue observableValue, Object o, Object t1) {
                 try{
@@ -79,8 +82,9 @@ public class MainController extends MainView implements Initializable {
                     if (Main.getDispatcher() instanceof StartFightDTO){
                         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("Fight.fxml"));
                         Scene scene = new Scene(fxmlLoader.load(), 800, 600);
-                        ((FightContoller) (fxmlLoader.getController())).setNames((StartFightDTO) Main.getDispatcher());
+                        ((FightContoller) (fxmlLoader.getController())).start((StartFightDTO) Main.getDispatcher());
                         Main.getCurrentStage().setScene(scene);
+                        removeClientDispatcherListener();
                     }
 
                 }
@@ -88,8 +92,17 @@ public class MainController extends MainView implements Initializable {
                     System.out.println(exception.getMessage());
                 }
             }
-        });
+        };
+        Main.dispatcherProperty().addListener(clientDispatcherListener);
+    }
 
+    private void removeClientDispatcherListener(){
+        Main.dispatcherProperty().removeListener(clientDispatcherListener);
+    }
+
+    public void exit(){
+        Main.getClient().close();
+        System.exit(0);
     }
 
     @Override

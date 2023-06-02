@@ -9,15 +9,19 @@ public class ActorConfig {
     private static double attackDistance;
     private static double damage;
     private static int attackDelay;
+    private static int finalDeathDelay;
+    private static int blinkCD;
     static{
-        hp = 100;
+        hp = 200;
         width = 75;
         height = 150;
         speed = 5;
         blinkDistance = 200;
-        attackDistance = 50;
+        attackDistance = 140;
         damage = 20;
         attackDelay = 500;
+        finalDeathDelay = 1000;
+        blinkCD = 2000;
     }
 
     public static double getWidth() {
@@ -83,5 +87,21 @@ public class ActorConfig {
 
     public static void setAttackDelay(int attackDelay) {
         ActorConfig.attackDelay = attackDelay;
+    }
+
+    public static int getFinalDeathDelay() {
+        return finalDeathDelay;
+    }
+
+    public static void setFinalDeathDelay(int finalDeathDelay) {
+        ActorConfig.finalDeathDelay = finalDeathDelay;
+    }
+
+    public static int getBlinkCD() {
+        return blinkCD;
+    }
+
+    public static void setBlinkCD(int blinkCD) {
+        ActorConfig.blinkCD = blinkCD;
     }
 }

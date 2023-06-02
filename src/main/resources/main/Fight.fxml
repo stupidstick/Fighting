@@ -17,24 +17,7 @@
             <Image url="@../fight/background.png" />
          </image>
       </ImageView>
-      <Pane fx:id="fightArea" layoutX="6.0" prefHeight="500.0" prefWidth="800.0">
-         <children>
-            <Pane layoutX="284.0" layoutY="225.0" maxHeight="100.0" maxWidth="100.0" prefHeight="100.0" prefWidth="100.0" />
-            <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="42.0" layoutY="350.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../fight/leftActor/idle.gif" />
-               </image>
-            </ImageView>
-            <Pane layoutX="423.0" layoutY="214.0" prefHeight="200.0" prefWidth="200.0">
-               <children>
-                  <ImageView fitHeight="200.0" fitWidth="426.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../fight/rightActor/attack.gif" />
-                     </image>
-                  </ImageView>
-               </children>
-            </Pane>
-         </children></Pane>
+      <Pane fx:id="fightArea" prefHeight="500.0" prefWidth="800.0" />
       <Button layoutX="37.0" layoutY="525.0" mnemonicParsing="false" text="Button" />
       <AnchorPane prefHeight="60.0" prefWidth="800.0">
          <children>
@@ -47,7 +30,7 @@
                   </Label>
                   <HBox alignment="TOP_CENTER" prefHeight="33.0" prefWidth="100.0">
                      <children>
-                        <Label fx:id="rightHP" text="100" textFill="WHITE">
+                        <Label fx:id="rightHP" textFill="WHITE">
                            <font>
                               <Font size="24.0" />
                            </font>
@@ -70,7 +53,7 @@
                   </Label>
                   <HBox alignment="TOP_CENTER" prefHeight="33.0" prefWidth="100.0">
                      <children>
-                        <Label fx:id="leftHP" text="100" textFill="WHITE">
+                        <Label fx:id="leftHP" textFill="WHITE">
                            <font>
                               <Font size="24.0" />
                            </font>
@@ -86,5 +69,25 @@
             </VBox>
          </children>
       </AnchorPane>
+      <Label fx:id="looserLabel" alignment="CENTER" layoutY="200.0" prefHeight="100.0" prefWidth="800.0" textFill="WHITE">
+         <font>
+            <Font name="System Italic" size="72.0" />
+         </font>
+      </Label>
+      <ImageView fitHeight="110.0" layoutX="-40.0" layoutY="500.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../fight/ground.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="110.0" layoutX="341.0" layoutY="500.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../fight/ground.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="110.0" layoutX="722.0" layoutY="500.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../fight/ground.png" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>

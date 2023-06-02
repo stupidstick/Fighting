@@ -19,6 +19,8 @@ public abstract class FightView {
     public Pane fightArea;
     @FXML
     public AnchorPane mainPane;
+    @FXML
+    public Label looserLabel;
     public void initialize(){
         FightAreaConfig.setWidth(fightArea.getPrefWidth());
         FightAreaConfig.setHeight(fightArea.getPrefHeight());

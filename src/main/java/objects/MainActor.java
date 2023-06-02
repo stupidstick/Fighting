@@ -9,6 +9,7 @@ import javafx.geometry.NodeOrientation;
 import javafx.scene.input.KeyEvent;
 import main.Main;
 
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -43,12 +44,12 @@ public class MainActor extends Actor{
                             }
                         }
 
-                        if (keyEvent.getCode() == KeyConfig.getBlink()){
+                        if (keyEvent.getCode() == KeyConfig.getBlink() && (new Date().getTime() - getBlinkLastUse() > ActorConfig.getBlinkCD())){
                             synchronized (getCurrentAction()){
                                 setCurrentAction("blink");
+                                setBlinkLastUse(new Date().getTime());
                                 Main.getClient().sendAction(getCurrentAction());
                             }
-
                         }
                         if (keyEvent.getCode() == KeyConfig.getAttack() ){
                             synchronized (getCurrentAction()){
@@ -56,7 +57,6 @@ public class MainActor extends Actor{
                                     setCurrentAction("attack");
                                     Main.getClient().sendAction(getCurrentAction());
                                     Timer timer = new Timer();
-                                    System.out.println("start");
                                     timer.schedule(dispatchAttack(), ActorConfig.getAttackDelay());
                                 }
                                 //attackDispatcher();
